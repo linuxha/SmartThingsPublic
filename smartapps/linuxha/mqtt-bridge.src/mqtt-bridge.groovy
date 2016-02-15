@@ -221,6 +221,11 @@ def updateSubscription() {
 def bridgeHandler(evt) {
     def json = new JsonSlurper().parseText(evt.value)
 
+    def t = json.type
+    def n = json.name
+    def v = json.value
+    log.debug "bridgeHandler json.type = ${t}, json.name = ${n}, json.value = ${json.value}"
+
     switch (json.type) {
         // Basically part of the default below
         //case "power":
