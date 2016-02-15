@@ -97,6 +97,9 @@ def getDeviceNames(devices) {
 }
 
 def initialize() {
+    // Subscribe to events from the bridge
+    subscribe(bridge, "message", bridgeHandler)
+
     // Subscribe to new events from devices
     subscribe(powerMeters,   "power",  inputHandler)
     subscribe(motionSensors, "motion", inputHandler)
@@ -182,10 +185,10 @@ def initialize() {
     if (waterSensors != null) {
 	subscribe(waterSensors, "water", inputHandler)
     }
-    */
+    * /
     // Subscribe to events from the bridge
     subscribe(bridge, "message", bridgeHandler)
-
+*/
     // Update the bridge
     updateSubscription()
 }
@@ -219,6 +222,8 @@ def updateSubscription() {
 
 // Receive an event from the bridge
 def bridgeHandler(evt) {
+    log.debug "bridgeHandler"
+
     def json = new JsonSlurper().parseText(evt.value)
 
     def t = json.type
