@@ -222,7 +222,7 @@ def updateSubscription() {
 
 // Receive an event from the bridge
 def bridgeHandler(evt) {
-    log.debug "bridgeHandler"
+    log.debug "bridgeHandler evt.value = ${evt.value}"
 
     def json = new JsonSlurper().parseText(evt.value)
 
