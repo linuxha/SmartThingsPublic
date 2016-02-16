@@ -70,8 +70,9 @@ def setNetworkAddress() {
 def parse(String description) {
     setNetworkAddress()
 
-    log.debug "B->H Parsing '${description}'" + new JsonOutput().toJson(msg.data)
+    log.debug "B->H Parsing '${description}'" // new JsonOutput().toJson(msg.data).toPrettyString()
     def msg = parseLanMessage(description)
+    log.debug "B->H Parsing '" + new JsonOutput().toJson(msg.data) + "'"
 
     return createEvent(name: "message", value: new JsonOutput().toJson(msg.data))
 }
