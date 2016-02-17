@@ -200,7 +200,7 @@ def initialize() {
         subscribe(vHumidities, "percent", inputHandler)
     }
     if (vDimmers != null) {
-        subscribe(vDimmers, "level", inputHandler)
+        subscribe(vDimmers, "plevel", inputHandler)
     }
     if (vBarometers != null) {
         subscribe(vBarometer, "pressure", inputHandler)
@@ -326,9 +326,14 @@ def bridgeHandler(evt) {
             }
             break
 
+        case "plevel":
+        case "degrees":
+        case "percent":
+        //   break
         //    
         default:
-            break
+           log.debug "SW: ${json.type}, ${json.name}, ${json.value}"
+           break
     }
 
     log.debug "Receiving device event from bridge: ${json}"
