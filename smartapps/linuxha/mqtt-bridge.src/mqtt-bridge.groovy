@@ -275,9 +275,9 @@ def updateSubscription() {
                 */
 
                 /* Custom */
-                degrees: getDeviceNames(degrees),
-                percent: getDeviceNames(percent),
-                plevel:  getDeviceNames(level),
+                degrees: getDeviceNames(vTemperatures),
+                percent: getDeviceNames(vHumidities),
+                plevel:  getDeviceNames(vDimmers),
 
                 /* Non-existent */
                 pressure: getDeviceNames(pressure)
