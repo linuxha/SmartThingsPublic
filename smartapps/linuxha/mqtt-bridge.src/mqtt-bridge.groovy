@@ -40,7 +40,7 @@ preferences {
 
         // stolen from https://github.com/davidsulpy/initialstate-smartapp
         input "accelerometers",   "capability.accelerationSensor", title: "Accelerometers", multiple: true, required: false
-	input "batteries",        "capability.battery", title: "Batteries", multiple: true, required: false
+        input "batteries",        "capability.battery", title: "Batteries", multiple: true, required: false
         input "contacts",         "capability.contactSensor", title: "Contact Sensors", multiple: true, required: false
         input "humidities",       "capability.relativeHumidityMeasurement", title: "Humidity Meters", multiple: true, required: false
         input "illuminances",     "capability.illuminanceMeasurement", title: "Illuminance Meters", multiple: true, required: false
@@ -73,7 +73,7 @@ preferences {
     }
 
     section ("Bridge") {
-        input "bridge", "capability.notification", title: "Notify this Bridge", required: true, multiple: false
+        input "bridge", "capability.notification", title: "Notify this Bridge", required: true, multiple: true
     }
 }
 
@@ -275,12 +275,12 @@ def updateSubscription() {
                 */
 
                 /* Custom */
-                degrees: getDeviceName(degrees),
-                percent: getDeviceName(percent),
-                plevel:  getDeviceName(level),
+                degrees: getDeviceNames(degrees),
+                percent: getDeviceNames(percent),
+                plevel:  getDeviceNames(level),
 
                 /* Non-existent */
-                pressure: getDeviceName(pressure)
+                pressure: getDeviceNames(pressure)
             ]
         ]
     ])
