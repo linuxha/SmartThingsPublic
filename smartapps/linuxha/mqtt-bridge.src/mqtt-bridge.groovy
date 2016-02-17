@@ -194,13 +194,13 @@ def initialize() {
 
     // Custom virtual devices
     if (vTemperatures != null) {
-        subscribe(vTemperatures, "degrees", inputHandler)
+        subscribe(vTemperatures, "temperature", inputHandler)
     }
     if (vHumidities != null) {
-        subscribe(vHumidities, "percent", inputHandler)
+        subscribe(vHumidities, "humidity", inputHandler)
     }
     if (vDimmers != null) {
-        subscribe(vDimmers, "plevel", inputHandler)
+        subscribe(vDimmers, "level", inputHandler)
     }
     if (vBarometers != null) {
         subscribe(vBarometer, "pressure", inputHandler)
@@ -275,9 +275,9 @@ def updateSubscription() {
                 */
 
                 /* Custom */
-                degrees: getDeviceNames(vTemperatures),
-                percent: getDeviceNames(vHumidities),
-                plevel:  getDeviceNames(vDimmers),
+                temperature: getDeviceNames(vTemperatures),
+                humidity: getDeviceNames(vHumidities),
+                level:  getDeviceNames(vDimmers),
 
                 /* Non-existent */
                 pressure: getDeviceNames(pressure)
@@ -318,6 +318,7 @@ def bridgeHandler(evt) {
                 }
             }
             break
+        case "plevel":
         case "level":
             levels.each{device->
                 if (device.displayName == json.name) {
@@ -326,7 +327,6 @@ def bridgeHandler(evt) {
             }
             break
 
-        case "plevel":
         case "degrees":
         case "percent":
         //   break
