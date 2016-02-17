@@ -47,9 +47,8 @@ preferences {
         input "presences",        "capability.presenceSensor", title: "Presence Sensors", multiple: true, required: false
         input "temperatures",     "capability.temperatureMeasurement", title: "Temperature Sensors", multiple: true, required: false
 
-	/*
         input "alarms",           "capability.alarm", title: "Alarms", multiple: true, required: false
-	input "beacons",          "capability.beacon", title: "Beacons", multiple: true, required: false
+        input "beacons",          "capability.beacon", title: "Beacons", multiple: true, required: false
         input "cos",              "capability.carbonMonoxideDetector", title: "Carbon  Monoxide Detectors", multiple: true, required: false
         input "colors",           "capability.colorControl", title: "Color Controllers", multiple: true, required: false
         input "doorsControllers", "capability.doorControl", title: "Door Controllers", multiple: true, required: false
@@ -63,7 +62,14 @@ preferences {
         input "thermostats",      "capability.thermostat", title: "Thermostats", multiple: true, required: false
         input "valves",           "capability.valve", title: "Valves", multiple: true, required: false
         input "waterSensors",     "capability.waterSensor", title: "Water Sensors", multiple: true, required: false
-	*/
+
+        // Stole these from Statusbits Github repo
+        // https://github.com/notoriousbdg/statusbits-smartthings/tree/master/VirtualThings
+        input "vHumidities",      "capability.humidity", title: "Virtual Humidity Sensors", multiple: true, required: false
+        input "vTemperatures",    "capability.temperature", title: "Virtual Temperature Sensors", multiple: true, required: false
+        input "vDimmers",         "capability.dimmer", title: "Virutal Dimmer", multiple: true, required: false
+        // Doesn't exist
+        input "vBarometer",       "capability.barometer", title: "Virutal Barometer", multiple: true, required: false
     }
 
     section ("Bridge") {
@@ -129,66 +135,82 @@ def initialize() {
 	subscribe(temperatures, "temperature", inputHandler)
     }
 
-    /*
+    /* */
     if (alarms != null) {
-	subscribe(alarms, "alarm", inputHandler)
+        subscribe(alarms, "alarm", inputHandler)
     }
     if (beacons != null) {
-	subscribe(beacons, "presence", inputHandler)
+        subscribe(beacons, "beaconPresence", inputHandler)
     }
     if (cos != null) {
-	subscribe(cos, "carbonMonoxide", inputHandler)
+        subscribe(cos, "carbonMonoxide", inputHandler)
     }
     if (colors != null) {
-	subscribe(colors, "hue", inputHandler)
-	subscribe(colors, "saturation", inputHandler)
-	subscribe(colors, "color", inputHandler)
+        subscribe(colors, "hue", inputHandler)
+        subscribe(colors, "saturation", inputHandler)
+        subscribe(colors, "color", inputHandler)
     }
     if (energyMeters != null) {
-	subscribe(energyMeters, "energy", inputHandler)
+        subscribe(energyMeters, "energy", inputHandler)
     }
     if (locks != null) {
-	subscribe(locks, "lock", inputHandler)
+        subscribe(locks, "lock", inputHandler)
     }
     if (musicPlayers != null) {
-	subscribe(musicPlayers, "status", inputHandler)
-	subscribe(musicPlayers, "level", inputHandler)
-	subscribe(musicPlayers, "trackDescription", inputHandler)
-	subscribe(musicPlayers, "trackData", inputHandler)
-	subscribe(musicPlayers, "mute", inputHandler)
+        subscribe(musicPlayers, "status", inputHandler)
+        subscribe(musicPlayers, "mplevel", inputHandler)               // Problem: fixed
+        subscribe(musicPlayers, "trackDescription", inputHandler)
+        subscribe(musicPlayers, "trackData", inputHandler)
+        subscribe(musicPlayers, "mute", inputHandler)
     }
     if (relaySwitches != null) {
-	subscribe(relaySwitches, "switch", inputHandler)
+        subscribe(relaySwitches, "rswitch", inputHandler)              // Problem: fixed
     }
     if (sleepSensors != null) {
-	subscribe(sleepSensors, "sleeping", inputHandler)
+        subscribe(sleepSensors, "sleeping", inputHandler)
     }
     if (smokeDetectors != null) {
-	subscribe(smokeDetectors, "smoke", inputHandler)
+        subscribe(smokeDetectors, "smoke", inputHandler)
     }
     if (peds != null) {
-	subscribe(peds, "steps", inputHandler)
-	subscribe(peds, "goal", inputHandler)
+        subscribe(peds, "steps", inputHandler)
+        subscribe(peds, "goal", inputHandler)
     }
     if (thermostats != null) {
-	subscribe(thermostats, "temperature", inputHandler)
-	subscribe(thermostats, "heatingSetpoint", inputHandler)
-	subscribe(thermostats, "coolingSetpoint", inputHandler)
-	subscribe(thermostats, "thermostatSetpoint", inputHandler)
-	subscribe(thermostats, "thermostatMode", inputHandler)
-	subscribe(thermostats, "thermostatFanMode", inputHandler)
-	subscribe(thermostats, "thermostatOperatingState", inputHandler)
+        subscribe(thermostats, "thTemperature", inputHandler)
+        subscribe(thermostats, "heatingSetpoint", inputHandler)
+        subscribe(thermostats, "coolingSetpoint", inputHandler)
+        subscribe(thermostats, "thermostatSetpoint", inputHandler)
+        subscribe(thermostats, "thermostatMode", inputHandler)
+        subscribe(thermostats, "thermostatFanMode", inputHandler)
+        subscribe(thermostats, "thermostatOperatingState", inputHandler)
     }
     if (valves != null) {
-	subscribe(valves, "contact", inputHandler)
+        subscribe(valves, "valveContact", inputHandler)
     }
     if (waterSensors != null) {
-	subscribe(waterSensors, "water", inputHandler)
+        subscribe(waterSensors, "water", inputHandler)
     }
-    * /
+
+    // Custom virtual devices
+    if (vTemperatures != null) {
+        subscribe(vTemperatures, "degrees", inputHandler)
+    }
+    if (vHumidities != null) {
+        subscribe(vHumidities, "percent", inputHandler)
+    }
+    if (vDimmers != null) {
+        subscribe(vDimmers, "level", inputHandler)
+    }
+    if (vBarometers != null) {
+        subscribe(vBarometer, "pressure", inputHandler)
+    }
+
+    /* */
     // Subscribe to events from the bridge
-    subscribe(bridge, "message", bridgeHandler)
-*/
+    /*
+    subscribe(bridge, "message", bridgeHandler) // moved to the top of the function
+    */
     // Update the bridge
     updateSubscription()
 }
@@ -199,18 +221,66 @@ def updateSubscription() {
         path: '/subscribe',
         body: [
             devices: [
-                power:        getDeviceNames(powerMeters),
-                motion:       getDeviceNames(motionSensors),
-                switch:       getDeviceNames(switches),
-                level:        getDeviceNames(levels),
-		/* */
-		acceleration: getDeviceNames(accelerations),
-		battery:      getDeviceNames(batteries),
-		contact:      getDeviceNames(contacts),
-		humidity:     getDeviceNames(humidities),
-		illuminance:  getDeviceNames(illuminances),
-		presence:     getDeviceNames(presences),
-		temperature:  getDeviceNames(temperatures)
+                power:          getDeviceNames(powerMeters),
+                motion:         getDeviceNames(motionSensors),
+                switch:         getDeviceNames(switches),
+                level:          getDeviceNames(levels),
+                /* */
+                acceleration:   getDeviceNames(accelerations),
+                battery:        getDeviceNames(batteries),
+                contact:        getDeviceNames(contacts),
+                humidity:       getDeviceNames(humidities),
+                illuminance:    getDeviceNames(illuminances),
+                beaconPresence: getDeviceNames(presences),
+                temperature:    getDeviceNames(temperatures),
+
+                /* */
+                alarm:          getDeviceNames(alarms),
+                carbonMonoxide: getDeviceNames(cos),
+
+                // Okay we have an issue, there are tags that are used in more
+                // than one place Need to figure out how to deal with that
+                // otherwise we don't get all the devices properly
+                /*
+                  hue: getDeviceNames(),
+                  saturation: getDeviceNames(saturation),
+                  color: getDeviceNames(),
+                  energy: getDeviceNames(),
+                  lock: getDeviceNames(),
+                  status: getDeviceNames(),
+                  
+                  mpLevel: getDeviceNames(),
+
+                  trackDescription: getDeviceNames(),
+                  trackData: getDeviceNames(),
+                  mute: getDeviceNames(),
+                */
+                  rswitch: getDeviceNames(relaySwitches),
+                 /*
+                  sleeping: getDeviceNames(),
+                  smoke: getDeviceNames(),
+                  steps: getDeviceNames(),
+                  goal: getDeviceNames(),
+                  thTemperature: getDeviceNames(),
+                  
+                  heatingSetpoint: getDeviceNames(),
+                  subscribe(thermostats, "coolingSetpoint", inputHandler),
+                  subscribe(thermostats, "thermostatSetpoint", inputHandler),
+                  subscribe(thermostats, "thermostatMode", inputHandler),
+                  subscribe(thermostats, "thermostatFanMode", inputHandler),
+                  subscribe(thermostats, "thermostatOperatingState", inputHandler),
+
+                  subscribe(valves, "valveContact", inputHandler),
+                  subscribe(waterSensors, "water", inputHandler),
+                */
+
+                /* Custom */
+                degrees: getDeviceName(degrees),
+                percent: getDeviceName(percent),
+                plevel:  getDeviceName(level),
+
+                /* Non-existent */
+                pressure: getDeviceName(pressure)
             ]
         ]
     ])
