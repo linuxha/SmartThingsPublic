@@ -70,5 +70,5 @@ def parse(String message) {
 }
 
 private def TRACE(message) {
-    //log.debug message
+    log.debug message
 }
