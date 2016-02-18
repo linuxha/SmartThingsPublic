@@ -50,7 +50,7 @@ metadata {
 }
 
 def parse(String message) {
-    TRACE("parse(${message})")
+    TRACE("vHumidity parse(${message})")
 
     Map msg = stringToMap(message)
     if (!msg.containsKey("humidity")) {
@@ -59,6 +59,7 @@ def parse(String message) {
     }
 
     Float val = msg.humidity.toFloat()
+    TRACE("vHumidity humidity = ${val}")
     def event = [
         name  : "humidity",
         value : val.round(1),
