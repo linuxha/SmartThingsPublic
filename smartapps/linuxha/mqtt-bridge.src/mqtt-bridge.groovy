@@ -241,38 +241,38 @@ def updateSubscription() {
                 // Okay we have an issue, there are tags that are used in more
                 // than one place Need to figure out how to deal with that
                 // otherwise we don't get all the devices properly
-                /*
-                  hue: getDeviceNames(),
-                  saturation: getDeviceNames(saturation),
-                  color: getDeviceNames(),
-                  energy: getDeviceNames(),
-                  lock: getDeviceNames(),
-                  status: getDeviceNames(),
-                  
-                  mpLevel: getDeviceNames(),
+                hue: getDeviceNames(colors),
+                saturation: getDeviceNames(colors),
+                color: getDeviceNames(colors),
 
-                  trackDescription: getDeviceNames(),
-                  trackData: getDeviceNames(),
-                  mute: getDeviceNames(),
-                */
-                  rswitch: getDeviceNames(relaySwitches),
-                 /*
-                  sleeping: getDeviceNames(),
-                  smoke: getDeviceNames(),
-                  steps: getDeviceNames(),
-                  goal: getDeviceNames(),
-                  thTemperature: getDeviceNames(),
+                energy: getDeviceNames(energyMeters),
+                lock: getDeviceNames(locks),
+                status: getDeviceNames(musicPlayers),
                   
-                  heatingSetpoint: getDeviceNames(),
-                  subscribe(thermostats, "coolingSetpoint", inputHandler),
-                  subscribe(thermostats, "thermostatSetpoint", inputHandler),
-                  subscribe(thermostats, "thermostatMode", inputHandler),
-                  subscribe(thermostats, "thermostatFanMode", inputHandler),
-                  subscribe(thermostats, "thermostatOperatingState", inputHandler),
+                mpLevel: getDeviceNames(musicPlayers),
 
-                  subscribe(valves, "valveContact", inputHandler),
-                  subscribe(waterSensors, "water", inputHandler),
-                */
+                trackDescription: getDeviceNames(musicPlayers),
+                trackData: getDeviceNames(musicPlayers),
+                mute: getDeviceNames(musicPlayers),
+
+                rswitch: getDeviceNames(relaySwitches),
+
+                sleeping: getDeviceNames(sleepSensors),
+                smoke: getDeviceNames(smokeDetectors),
+                steps: getDeviceNames(peds),
+                goal: getDeviceNames(peds),
+
+                thTemperature: getDeviceNames(thermostats),
+                  
+                heatingSetpoint: getDeviceNames(thermostats),
+
+                coolingSetpoint: getDeviceNames(thermostats),
+                thermostatSetpoint: getDeviceNames(thermostats),
+                thermostatMode: getDeviceNames(thermostats),
+                thermostatFanMode: getDeviceNames(thermostats),
+                thermostatOperatingState: getDeviceNames(thermostats),
+                valveContact: getDeviceNames(valves),
+                water: getDeviceNames(waterSensors),
 
                 /* Custom */
                 vTemperature: getDeviceNames(vTemperatures),
