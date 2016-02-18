@@ -65,8 +65,8 @@ preferences {
 
         // Stole these from Statusbits Github repo
         // https://github.com/notoriousbdg/statusbits-smartthings/tree/master/VirtualThings
-        input "vHumidities",      "capability.humidity", title: "Virtual Humidity Sensors", multiple: true, required: false
-        input "vTemperatures",    "capability.temperature", title: "Virtual Temperature Sensors", multiple: true, required: false
+        input "vHumidities",      "capability.relativeHumidityMeasurement", title: "Virtual Humidity Sensors", multiple: true, required: false
+        input "vTemperatures",    "capability.temperatureMeasurement", title: "Virtual Temperature Sensors", multiple: true, required: false
         input "vDimmers",         "capability.dimmer", title: "Virutal Dimmer", multiple: true, required: false
         // Doesn't exist
         input "vBarometer",       "capability.barometer", title: "Virutal Barometer", multiple: true, required: false
