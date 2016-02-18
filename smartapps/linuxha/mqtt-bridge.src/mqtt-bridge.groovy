@@ -158,7 +158,7 @@ def initialize() {
     }
     if (musicPlayers != null) {
         subscribe(musicPlayers, "status", inputHandler)
-        subscribe(musicPlayers, "mplevel", inputHandler)               // Problem: fixed
+        subscribe(musicPlayers, "mpLevel", inputHandler)               // Problem: fixed
         subscribe(musicPlayers, "trackDescription", inputHandler)
         subscribe(musicPlayers, "trackData", inputHandler)
         subscribe(musicPlayers, "mute", inputHandler)
@@ -194,16 +194,16 @@ def initialize() {
 
     // Custom virtual devices
     if (vTemperatures != null) {
-        subscribe(vTemperatures, "temperature", inputHandler)
+        subscribe(vTemperatures, "vTemperature", inputHandler)
     }
     if (vHumidities != null) {
-        subscribe(vHumidities, "humidity", inputHandler)
+        subscribe(vHumidities, "vHhumidity", inputHandler)
     }
     if (vDimmers != null) {
-        subscribe(vDimmers, "level", inputHandler)
+        subscribe(vDimmers, "vLevel", inputHandler)
     }
     if (vBarometers != null) {
-        subscribe(vBarometer, "pressure", inputHandler)
+        subscribe(vBarometer, "vPressure", inputHandler)
     }
 
     /* */
@@ -275,12 +275,12 @@ def updateSubscription() {
                 */
 
                 /* Custom */
-                temperature: getDeviceNames(vTemperatures),
-                humidity: getDeviceNames(vHumidities),
-                level:  getDeviceNames(vDimmers),
+                vTemperature: getDeviceNames(vTemperatures),
+                vHumidity: getDeviceNames(vHumidities),
+                vLevel:  getDeviceNames(vDimmers),
 
                 /* Non-existent */
-                pressure: getDeviceNames(pressure)
+                vPressure: getDeviceNames(pressure)
             ]
         ]
     ])
