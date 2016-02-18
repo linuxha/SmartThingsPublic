@@ -27,6 +27,7 @@
 metadata {
     definition (name:"vHumidity", namespace:"linuxha", author:"geko@statusbits.com") {
         capability "Relative Humidity Measurement"
+        capability "relativeHumidityMeasurement"
         capability "Sensor"
 
         // custom commands
@@ -50,7 +51,7 @@ metadata {
 }
 
 def parse(String message) {
-    TRACE("vHumidity parse(${message})")
+    TRACE("parse(${message})")
 
     Map msg = stringToMap(message)
     if (!msg.containsKey("humidity")) {
@@ -59,7 +60,7 @@ def parse(String message) {
     }
 
     Float val = msg.humidity.toFloat()
-    TRACE("vHumidity humidity = ${val}")
+    TRACE("humidity = ${val}")
     def event = [
         name  : "humidity",
         value : val.round(1),
@@ -71,5 +72,5 @@ def parse(String message) {
 }
 
 private def TRACE(message) {
-    log.debug message
+    log.debug "vHumidity ${message}"
 }
