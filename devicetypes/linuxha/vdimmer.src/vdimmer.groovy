@@ -89,12 +89,12 @@ def setLevel(val){
     if (val == 0){ 
     	sendEvent(name:"level",value:val)
     	off()
-    }
-    else
-    {
+        log.info "OFF: setLevel $val"
+    } else {
     	on()
     	sendEvent(name:"level",value:val)
     	sendEvent(name:"switch.setLevel",value:val)
+        log.info "ON:s github.com/lientLevel $val"
     }
 }
 
