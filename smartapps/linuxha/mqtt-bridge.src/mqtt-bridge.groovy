@@ -26,9 +26,14 @@ definition(
     author:      "St. John Johnson, Jeremiah Wuenschel and Neil Cherry",
     description: "A bridge between SmartThings and MQTT",
     category:    "My Apps",
+    /*
     iconUrl:     "https://s3.amazonaws.com/smartapp-icons/Connections/Cat-Connections.png",
     iconX2Url:   "https://s3.amazonaws.com/smartapp-icons/Connections/Cat-Connections@2x.png",
     iconX3Url:   "https://s3.amazonaws.com/smartapp-icons/Connections/Cat-Connections@3x.png"
+    */
+    iconUrl:     "https://ushomeautomation.com/images/MQTT-Connections.png",
+    iconX2Url:   "https://ushomeautomation.com/images/MQTT-Connections.png",
+    iconX3Url:   "https://ushomeautomation.com/images/MQTT-Connections.png"
 )
 
 preferences {
@@ -171,6 +176,7 @@ def initialize() {
     }
     if (smokeDetectors != null) {
         subscribe(smokeDetectors, "smoke", inputHandler)
+        subscribe(smokeDetectors, "alarmState", inputHandler)
     }
     if (peds != null) {
         subscribe(peds, "steps", inputHandler)
@@ -259,6 +265,7 @@ def updateSubscription() {
 
                 sleeping: getDeviceNames(sleepSensors),
                 smoke: getDeviceNames(smokeDetectors),
+                alarmState: getDeviceNames(smokeDetectors),
                 steps: getDeviceNames(peds),
                 goal: getDeviceNames(peds),
 
