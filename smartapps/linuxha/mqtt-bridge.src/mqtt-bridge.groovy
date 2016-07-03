@@ -1,10 +1,9 @@
 /**
  *  MQTT Bridge
  *
- * 	Authors
+ *  Authors
  *   - st.john.johnson@gmail.com
  *   - jeremiah.wuenschel@gmail.com
- *   - ncherry@linuxha.com
  *
  *  Copyright 2016
  *
@@ -19,66 +18,421 @@
  */
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
+import groovy.transform.Field
+
+// Massive lookup tree
+@Field CAPABILITY_MAP = [
+    "accelerationSensors": [
+        name: "Acceleration Sensor",
+        capability: "capability.accelerationSensor",
+        attributes: [
+            "acceleration"
+        ]
+    ],
+    "alarm": [
+        name: "Alarm",
+        capability: "capability.alarm",
+        attributes: [
+            "alarm"
+        ],
+        action: "actionAlarm"
+    ],
+    "battery": [
+        name: "Battery",
+        capability: "capability.battery",
+        attributes: [
+            "battery"
+        ]
+    ],
+    "beacon": [
+        name: "Beacon",
+        capability: "capability.beacon",
+        attributes: [
+            "presence"
+        ]
+    ],
+    "button": [
+        name: "Button",
+        capability: "capability.button",
+        attributes: [
+            "button"
+        ]
+    ],
+    "carbonDioxideMeasurement": [
+        name: "Carbon Dioxide Measurement",
+        capability: "capability.carbonDioxideMeasurement",
+        attributes: [
+            "carbonDioxide"
+        ]
+    ],
+    "carbonMonoxideDetector": [
+        name: "Carbon Monoxide Detector",
+        capability: "capability.carbonMonoxideDetector",
+        attributes: [
+            "carbonMonoxide"
+        ]
+    ],
+    "colorControl": [
+        name: "Color Control",
+        capability: "capability.colorControl",
+        attributes: [
+            "hue",
+            "saturation",
+            "color"
+        ],
+        action: "actionColor"
+    ],
+    "colorTemperature": [
+        name: "Color Temperature",
+        capability: "capability.colorTemperature",
+        attributes: [
+            "colorTemperature"
+        ],
+        action: "actionColorTemperature"
+    ],
+    "consumable": [
+        name: "Consumable",
+        capability: "capability.consumable",
+        attributes: [
+            "consumable"
+        ],
+        action: "actionConsumable"
+    ],
+    "contactSensors": [
+        name: "Contact Sensor",
+        capability: "capability.contactSensor",
+        attributes: [
+            "contact"
+        ]
+    ],
+    "doorControl": [
+        name: "Door Control",
+        capability: "capability.doorControl",
+        attributes: [
+            "door"
+        ],
+        action: "actionOpenClosed"
+    ],
+    "energyMeter": [
+        name: "Energy Meter",
+        capability: "capability.energyMeter",
+        attributes: [
+            "energy"
+        ]
+    ],
+    "garageDoors": [
+        name: "Garage Door Control",
+        capability: "capability.garageDoorControl",
+        attributes: [
+            "door"
+        ],
+        action: "actionOpenClosed"
+    ],
+    "illuminanceMeasurement": [
+        name: "Illuminance Measurement",
+        capability: "capability.illuminanceMeasurement",
+        attributes: [
+            "illuminance"
+        ]
+    ],
+    "imageCapture": [
+        name: "Image Capture",
+        capability: "capability.imageCapture",
+        attributes: [
+            "image"
+        ]
+    ],
+    "levels": [
+        name: "Switch Level",
+        capability: "capability.switchLevel",
+        attributes: [
+            "level"
+        ],
+        action: "actionLevel"
+    ],
+    "lock": [
+        name: "Lock",
+        capability: "capability.lock",
+        attributes: [
+            "lock"
+        ],
+        action: "actionLock"
+    ],
+    "mediaController": [
+        name: "Media Controller",
+        capability: "capability.mediaController",
+        attributes: [
+            "activities",
+            "currentActivity"
+        ]
+    ],
+    "motionSensors": [
+        name: "Motion Sensor",
+        capability: "capability.motionSensor",
+        attributes: [
+            "motion"
+        ]
+    ],
+    "musicPlayer": [
+        name: "Music Player",
+        capability: "capability.musicPlayer",
+        attributes: [
+            "status",
+            "level",
+            "trackDescription",
+            "trackData",
+            "mute"
+        ],
+        action: "actionMusicPlayer"
+    ],
+    "pHMeasurement": [
+        name: "pH Measurement",
+        capability: "capability.pHMeasurement",
+        attributes: [
+            "pH"
+        ]
+    ],
+    "powerMeters": [
+        name: "Power Meter",
+        capability: "capability.powerMeter",
+        attributes: [
+            "power"
+        ]
+    ],
+    "presenceSensors": [
+        name: "Presence Sensor",
+        capability: "capability.presenceSensor",
+        attributes: [
+            "presence"
+        ]
+    ],
+    "humiditySensors": [
+        name: "Relative Humidity Measurement",
+        capability: "capability.relativeHumidityMeasurement",
+        attributes: [
+            "humidity"
+        ]
+    ],
+    "relaySwitch": [
+        name: "Relay Switch",
+        capability: "capability.relaySwitch",
+        attributes: [
+            "switch"
+        ],
+        action: "actionOnOff"
+    ],
+    "shockSensor": [
+        name: "Shock Sensor",
+        capability: "capability.shockSensor",
+        attributes: [
+            "shock"
+        ]
+    ],
+    "signalStrength": [
+        name: "Signal Strength",
+        capability: "capability.signalStrength",
+        attributes: [
+            "lqi",
+            "rssi"
+        ]
+    ],
+    "sleepSensor": [
+        name: "Sleep Sensor",
+        capability: "capability.sleepSensor",
+        attributes: [
+            "sleeping"
+        ]
+    ],
+    "smokeDetector": [
+        name: "Smoke Detector",
+        capability: "capability.smokeDetector",
+        attributes: [
+            "smoke"
+        ]
+    ],
+    "soundSensor": [
+        name: "Sound Sensor",
+        capability: "capability.soundSensor",
+        attributes: [
+            "sound"
+        ]
+    ],
+    "stepSensor": [
+        name: "Step Sensor",
+        capability: "capability.stepSensor",
+        attributes: [
+            "steps",
+            "goal"
+        ]
+    ],
+    "switches": [
+        name: "Switch",
+        capability: "capability.switch",
+        attributes: [
+            "switch"
+        ],
+        action: "actionOnOff"
+    ],
+    "soundPressureLevel": [
+        name: "Sound Pressure Level",
+        capability: "capability.soundPressureLevel",
+        attributes: [
+            "soundPressureLevel"
+        ]
+    ],
+    "tamperAlert": [
+        name: "Tamper Alert",
+        capability: "capability.tamperAlert",
+        attributes: [
+            "tamper"
+        ]
+    ],
+    "temperatureSensors": [
+        name: "Temperature Measurement",
+        capability: "capability.temperatureMeasurement",
+        attributes: [
+            "temperature"
+        ]
+    ],
+    "thermostat": [
+        name: "Thermostat",
+        capability: "capability.thermostat",
+        attributes: [
+            "temperature",
+            "heatingSetpoint",
+            "coolingSetpoint",
+            "thermostatSetpoint",
+            "thermostatMode",
+            "thermostatFanMode",
+            "thermostatOperatingState"
+        ],
+        action: "actionThermostat"
+    ],
+    "thermostatCoolingSetpoint": [
+        name: "Thermostat Cooling Setpoint",
+        capability: "capability.thermostatCoolingSetpoint",
+        attributes: [
+            "coolingSetpoint"
+        ],
+        action: "actionCoolingThermostat"
+    ],
+    "thermostatFanMode": [
+        name: "Thermostat Fan Mode",
+        capability: "capability.thermostatFanMode",
+        attributes: [
+            "thermostatFanMode"
+        ],
+        action: "actionThermostatFan"
+    ],
+    "thermostatHeatingSetpoint": [
+        name: "Thermostat Heating Setpoint",
+        capability: "capability.thermostatHeatingSetpoint",
+        attributes: [
+            "heatingSetpoint"
+        ],
+        action: "actionHeatingThermostat"
+    ],
+    "thermostatMode": [
+        name: "Thermostat Mode",
+        capability: "capability.thermostatMode",
+        attributes: [
+            "thermostatMode"
+        ],
+        action: "actionThermostatMode"
+    ],
+    "thermostatOperatingState": [
+        name: "Thermostat Operating State",
+        capability: "capability.thermostatOperatingState",
+        attributes: [
+            "thermostatOperatingState"
+        ]
+    ],
+    "thermostatSetpoint": [
+        name: "Thermostat Setpoint",
+        capability: "capability.thermostatSetpoint",
+        attributes: [
+            "thermostatSetpoint"
+        ]
+    ],
+    "threeAxis": [
+        name: "Three Axis",
+        capability: "capability.threeAxis",
+        attributes: [
+            "threeAxis"
+        ]
+    ],
+    "timedSession": [
+        name: "Timed Session",
+        capability: "capability.timedSession",
+        attributes: [
+            "timeRemaining",
+            "sessionStatus"
+        ],
+        action: "actionTimedSession"
+    ],
+    "touchSensor": [
+        name: "Touch Sensor",
+        capability: "capability.touchSensor",
+        attributes: [
+            "touch"
+        ]
+    ],
+    "valve": [
+        name: "Valve",
+        capability: "capability.valve",
+        attributes: [
+            "contact"
+        ],
+        action: "actionOpenClosed"
+    ],
+    "voltageMeasurement": [
+        name: "Voltage Measurement",
+        capability: "capability.voltageMeasurement",
+        attributes: [
+            "voltage"
+        ]
+    ],
+    "waterSensors": [
+        name: "Water Sensor",
+        capability: "capability.waterSensor",
+        attributes: [
+            "water"
+        ]
+    ],
+    "windowShades": [
+        name: "Window Shade",
+        capability: "capability.windowShade",
+        attributes: [
+            "windowShade"
+        ],
+        action: "actionOpenClosed"
+    ]
+]
 
 definition(
-    name:        "MQTT Bridge",
-    namespace:   "linuxha",
-    author:      "St. John Johnson, Jeremiah Wuenschel and Neil Cherry",
+    name: "MQTT Bridge",
+    namespace: "linuxha",
+    author: "St. John Johnson and Jeremiah Wuenschel",
     description: "A bridge between SmartThings and MQTT",
-    category:    "My Apps",
-    /*
-    iconUrl:     "https://s3.amazonaws.com/smartapp-icons/Connections/Cat-Connections.png",
-    iconX2Url:   "https://s3.amazonaws.com/smartapp-icons/Connections/Cat-Connections@2x.png",
-    iconX3Url:   "https://s3.amazonaws.com/smartapp-icons/Connections/Cat-Connections@3x.png"
-    */
-    iconUrl:     "https://ushomeautomation.com/images/MQTT-Connections.png",
-    iconX2Url:   "https://ushomeautomation.com/images/MQTT-Connections.png",
-    iconX3Url:   "https://ushomeautomation.com/images/MQTT-Connections.png"
+    category: "My Apps",
+    iconUrl: "https://s3.amazonaws.com/smartapp-icons/Connections/Cat-Connections.png",
+    iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Connections/Cat-Connections@2x.png",
+    iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Connections/Cat-Connections@3x.png"
 )
 
 preferences {
-    section("Choose which devices to monitor...") {
-        input "switches",         "capability.switch",       title: "Switches",       multiple: true, required: false
-        input "levels",           "capability.switchLevel",  title: "Levels",         multiple: true, required: false
-        input "powerMeters",      "capability.powerMeter",   title: "Power Meters",   multiple: true, required: false
-        input "motionSensors",    "capability.motionSensor", title: "Motion Sensors", multiple: true, required: false
+    section("Send Notifications?") {
+        input("recipients", "contact", title: "Send notifications to", multiple: true, required: false)
+    }
 
-        // stolen from https://github.com/davidsulpy/initialstate-smartapp
-        input "accelerometers",   "capability.accelerationSensor", title: "Accelerometers", multiple: true, required: false
-        input "batteries",        "capability.battery", title: "Batteries", multiple: true, required: false
-        input "contacts",         "capability.contactSensor", title: "Contact Sensors", multiple: true, required: false
-        input "humidities",       "capability.relativeHumidityMeasurement", title: "Humidity Meters", multiple: true, required: false
-        input "illuminances",     "capability.illuminanceMeasurement", title: "Illuminance Meters", multiple: true, required: false
-        input "presences",        "capability.presenceSensor", title: "Presence Sensors", multiple: true, required: false
-        input "temperatures",     "capability.temperatureMeasurement", title: "Temperature Sensors", multiple: true, required: false
-
-        input "alarms",           "capability.alarm", title: "Alarms", multiple: true, required: false
-        input "beacons",          "capability.beacon", title: "Beacons", multiple: true, required: false
-        input "cos",              "capability.carbonMonoxideDetector", title: "Carbon  Monoxide Detectors", multiple: true, required: false
-        input "colors",           "capability.colorControl", title: "Color Controllers", multiple: true, required: false
-        input "doorsControllers", "capability.doorControl", title: "Door Controllers", multiple: true, required: false
-        input "energyMeters",     "capability.energyMeter", title: "Energy Meters", multiple: true, required: false
-        input "locks",            "capability.lock", title: "Locks", multiple: true, required: false
-        input "musicPlayers",     "capability.musicPlayer", title: "Music Players", multiple: true, required: false
-        input "relaySwitches",    "capability.relaySwitch", title: "Relay Switches", multiple: true, required: false
-        input "sleepSensors",     "capability.sleepSensor", title: "Sleep Sensors", multiple: true, required: false
-        input "smokeDetectors",   "capability.smokeDetector", title: "Smoke Detectors", multiple: true, required: false
-        input "peds",             "capability.stepSensor", title: "Pedometers", multiple: true, required: false
-        input "thermostats",      "capability.thermostat", title: "Thermostats", multiple: true, required: false
-        input "valves",           "capability.valve", title: "Valves", multiple: true, required: false
-        input "waterSensors",     "capability.waterSensor", title: "Water Sensors", multiple: true, required: false
-
-        // Stole these from Statusbits Github repo
-        // https://github.com/notoriousbdg/statusbits-smartthings/tree/master/VirtualThings
-        input "vHumidities",      "capability.relativeHumidityMeasurement", title: "Virtual Humidity Sensors", multiple: true, required: false
-        input "vTemperatures",    "capability.temperatureMeasurement", title: "Virtual Temperature Sensors", multiple: true, required: false
-        input "vDimmers",         "capability.dimmer", title: "Virutal Dimmer", multiple: true, required: false
-        // Doesn't exist
-        input "vBarometer",       "capability.barometer", title: "Virutal Barometer", multiple: true, required: false
+    section ("Input") {
+        CAPABILITY_MAP.each { key, capability ->
+            input key, capability["capability"], title: capability["name"], multiple: true, required: false
+        }
     }
 
     section ("Bridge") {
-        input "bridge", "capability.notification", title: "Notify this Bridge", required: true, multiple: true
+        input "bridge", "capability.notification", title: "Notify this Bridge", required: true, multiple: false
     }
 }
 
@@ -108,187 +462,39 @@ def getDeviceNames(devices) {
 }
 
 def initialize() {
+    // Subscribe to new events from devices
+    CAPABILITY_MAP.each { key, capability ->
+        capability["attributes"].each { attribute ->
+            subscribe(settings[key], attribute, inputHandler)
+        }
+    }
+
     // Subscribe to events from the bridge
     subscribe(bridge, "message", bridgeHandler)
 
-    // Subscribe to new events from devices
-    subscribe(powerMeters,   "power",  inputHandler)
-    subscribe(motionSensors, "motion", inputHandler)
-    subscribe(switches,      "switch", inputHandler)
-    subscribe(levels,        "level",  inputHandler)
-
-    // new devices stolen from Initial State SmartThings SmartApp
-    if (accelerometers != null) {
-	subscribe(accelerometers, "acceleration", inputHandler)
-    }
-    if (batteries != null) {
-	subscribe(batteries, "battery", inputHandler)
-    }
-    if (contacts != null) {
-	subscribe(contacts, "contact", inputHandler)
-    }
-    if (humidities != null) {
-	subscribe(humidities, "humidity", inputHandler)
-    }
-    if (illuminances != null) {
-	subscribe(illuminances, "illuminance", inputHandler)
-    }
-    if (presences != null) {
-	subscribe(presences, "presence", inputHandler)
-    }
-    if (temperatures != null) {
-	subscribe(temperatures, "temperature", inputHandler)
-    }
-
-    /* */
-    if (alarms != null) {
-        subscribe(alarms, "alarm", inputHandler)
-    }
-    if (beacons != null) {
-        subscribe(beacons, "beaconPresence", inputHandler)
-    }
-    if (cos != null) {
-        subscribe(cos, "carbonMonoxide", inputHandler)
-    }
-    if (colors != null) {
-        subscribe(colors, "hue", inputHandler)
-        subscribe(colors, "saturation", inputHandler)
-        subscribe(colors, "color", inputHandler)
-    }
-    if (energyMeters != null) {
-        subscribe(energyMeters, "energy", inputHandler)
-    }
-    if (locks != null) {
-        subscribe(locks, "lock", inputHandler)
-    }
-    if (musicPlayers != null) {
-        subscribe(musicPlayers, "status", inputHandler)
-        subscribe(musicPlayers, "mpLevel", inputHandler)               // Problem: fixed
-        subscribe(musicPlayers, "trackDescription", inputHandler)
-        subscribe(musicPlayers, "trackData", inputHandler)
-        subscribe(musicPlayers, "mute", inputHandler)
-    }
-    if (relaySwitches != null) {
-        subscribe(relaySwitches, "rswitch", inputHandler)              // Problem: fixed
-    }
-    if (sleepSensors != null) {
-        subscribe(sleepSensors, "sleeping", inputHandler)
-    }
-    if (smokeDetectors != null) {
-        subscribe(smokeDetectors, "smoke", inputHandler)
-        subscribe(smokeDetectors, "alarmState", inputHandler)
-    }
-    if (peds != null) {
-        subscribe(peds, "steps", inputHandler)
-        subscribe(peds, "goal", inputHandler)
-    }
-    if (thermostats != null) {
-        subscribe(thermostats, "thTemperature", inputHandler)
-        subscribe(thermostats, "heatingSetpoint", inputHandler)
-        subscribe(thermostats, "coolingSetpoint", inputHandler)
-        subscribe(thermostats, "thermostatSetpoint", inputHandler)
-        subscribe(thermostats, "thermostatMode", inputHandler)
-        subscribe(thermostats, "thermostatFanMode", inputHandler)
-        subscribe(thermostats, "thermostatOperatingState", inputHandler)
-    }
-    if (valves != null) {
-        subscribe(valves, "valveContact", inputHandler)
-    }
-    if (waterSensors != null) {
-        subscribe(waterSensors, "water", inputHandler)
-    }
-
-    // Custom virtual devices
-    if (vTemperatures != null) {
-        subscribe(vTemperatures, "vTemperature", inputHandler)
-    }
-    if (vHumidities != null) {
-        subscribe(vHumidities, "vHhumidity", inputHandler)
-    }
-    if (vDimmers != null) {
-        subscribe(vDimmers, "vLevel", inputHandler)
-    }
-    if (vBarometers != null) {
-        subscribe(vBarometer, "vPressure", inputHandler)
-    }
-
-    /* */
-    // Subscribe to events from the bridge
-    /*
-    subscribe(bridge, "message", bridgeHandler) // moved to the top of the function
-    */
     // Update the bridge
     updateSubscription()
 }
 
-// Update the bridge's subscription
+// Update the bridge"s subscription
 def updateSubscription() {
+    def attributes = [
+        notify: ["Contacts", "System"]
+    ]
+    CAPABILITY_MAP.each { key, capability ->
+        capability["attributes"].each { attribute ->
+            if (!attributes.containsKey(attribute)) {
+                attributes[attribute] = []
+            }
+            settings[key].each {device ->
+                attributes[attribute].push(device.displayName)
+            }
+        }
+    }
     def json = new groovy.json.JsonOutput().toJson([
-        path: '/subscribe',
+        path: "/subscribe",
         body: [
-            devices: [
-                power:          getDeviceNames(powerMeters),
-                motion:         getDeviceNames(motionSensors),
-                switch:         getDeviceNames(switches),
-                level:          getDeviceNames(levels),
-                /* */
-                acceleration:   getDeviceNames(accelerations),
-                battery:        getDeviceNames(batteries),
-                contact:        getDeviceNames(contacts),
-                humidity:       getDeviceNames(humidities),
-                illuminance:    getDeviceNames(illuminances),
-                beaconPresence: getDeviceNames(presences),
-                temperature:    getDeviceNames(temperatures),
-
-                /* */
-                alarm:          getDeviceNames(alarms),
-                carbonMonoxide: getDeviceNames(cos),
-
-                // Okay we have an issue, there are tags that are used in more
-                // than one place Need to figure out how to deal with that
-                // otherwise we don't get all the devices properly
-                hue: getDeviceNames(colors),
-                saturation: getDeviceNames(colors),
-                color: getDeviceNames(colors),
-
-                energy: getDeviceNames(energyMeters),
-                lock: getDeviceNames(locks),
-                status: getDeviceNames(musicPlayers),
-                  
-                mpLevel: getDeviceNames(musicPlayers),
-
-                trackDescription: getDeviceNames(musicPlayers),
-                trackData: getDeviceNames(musicPlayers),
-                mute: getDeviceNames(musicPlayers),
-
-                rswitch: getDeviceNames(relaySwitches),
-
-                sleeping: getDeviceNames(sleepSensors),
-                smoke: getDeviceNames(smokeDetectors),
-                alarmState: getDeviceNames(smokeDetectors),
-                steps: getDeviceNames(peds),
-                goal: getDeviceNames(peds),
-
-                thTemperature: getDeviceNames(thermostats),
-                  
-                heatingSetpoint: getDeviceNames(thermostats),
-
-                coolingSetpoint: getDeviceNames(thermostats),
-                thermostatSetpoint: getDeviceNames(thermostats),
-                thermostatMode: getDeviceNames(thermostats),
-                thermostatFanMode: getDeviceNames(thermostats),
-                thermostatOperatingState: getDeviceNames(thermostats),
-                valveContact: getDeviceNames(valves),
-                water: getDeviceNames(waterSensors),
-
-                /* Custom */
-                vTemperature: getDeviceNames(vTemperatures),
-                vHumidity: getDeviceNames(vHumidities),
-                vLevel:  getDeviceNames(vDimmers),
-
-                /* Non-existent */
-                vPressure: getDeviceNames(pressure)
-            ]
+            devices: attributes
         ]
     ])
 
@@ -299,57 +505,39 @@ def updateSubscription() {
 
 // Receive an event from the bridge
 def bridgeHandler(evt) {
-    log.debug "bridgeHandler evt.value = ${evt.value}"
-
     def json = new JsonSlurper().parseText(evt.value)
+    log.debug "Received device event from bridge: ${json}"
 
-    def t = json.type
-    def n = json.name
-    def v = json.value
-    log.debug "bridgeHandler json.type = ${t}, json.name = ${n}, json.value = ${json.value}"
+    if (json.type == "notify") {
+        if (json.name == "Contacts") {
+            sendNotificationToContacts("${json.value}", recipients)
+        } else {
+            sendNotificationEvent("${json.value}")
+        }
+        return
+    }
 
-    switch (json.type) {
-        // Basically part of the default below
-        //case "power":
-        //case "motion":
-        //    // Do nothing, we can change nothing here
-        //    break
-        case "switch":
-            switches.each{device->
+    // @NOTE this is stored AWFUL, we need a faster lookup table
+    // @NOTE this also has no fast fail, I need to look into how to do that
+    CAPABILITY_MAP.each { key, capability ->
+        if (capability["attributes"].contains(json.type)) {
+            settings[key].each {device ->
                 if (device.displayName == json.name) {
-                    if (json.value == 'on') {
-                        device.on();
-                    } else {
-                        device.off();
+                    if (capability.containsKey("action")) {
+                        def action = capability["action"]
+                        // Yes, this is calling the method dynamically
+                        "$action"(device, json.type, json.value)
                     }
                 }
             }
-            break
-        case "plevel":
-        case "level":
-            levels.each{device->
-                if (device.displayName == json.name) {
-                    device.setLevel(json.value);
-                }
-            }
-            break
-
-        case "degrees":
-        case "percent":
-        //   break
-        //    
-        default:
-           log.debug "SW: ${json.type}, ${json.name}, ${json.value}"
-           break
+        }
     }
-
-    log.debug "Receiving device event from bridge: ${json}"
 }
 
 // Receive an event from a device
 def inputHandler(evt) {
     def json = new JsonOutput().toJson([
-        path: '/push',
+        path: "/push",
         body: [
             name: evt.displayName,
             value: evt.value,
@@ -359,4 +547,132 @@ def inputHandler(evt) {
 
     log.debug "Forwarding device event to bridge: ${json}"
     bridge.deviceNotification(json)
+}
+
+// +---------------------------------+
+// | WARNING, BEYOND HERE BE DRAGONS |
+// +---------------------------------+
+// These are the functions that handle incoming messages from MQTT.
+// I tried to put them in closures but apparently SmartThings Groovy sandbox
+// restricts you from running clsures from an object (it's not safe).
+
+def actionAlarm(device, attribute, value) {
+    switch (value) {
+        case "strobe":
+            device.strobe()
+        break
+        case "siren":
+            device.siren()
+        break
+        case "off":
+            device.off()
+        break
+        case "both":
+            device.both()
+        break
+    }
+}
+
+def actionColor(device, attribute, value) {
+    switch (attribute) {
+        case "hue":
+            device.setHue(value)
+        break
+        case "saturation":
+            device.setSaturation(value)
+        break
+        case "color":
+            device.setColor(value)
+        break
+    }
+}
+
+def actionOpenClosed(device, attribute, value) {
+    if (value == "open") {
+        device.open()
+    } else if (value == "closed") {
+        device.close()
+    }
+}
+
+def actionOnOff(device, attribute, value) {
+    if (value == "off") {
+        device.off()
+    } else if (value == "on") {
+        device.on()
+    }
+}
+
+def actionThermostat(device, attribute, value) {
+    switch(attribute) {
+        case "heatingSetpoint":
+            device.setHeatingSetpoint(value)
+        break
+        case "coolingSetpoint":
+            device.setCoolingSetpoint(value)
+        break
+        case "thermostatMode":
+            device.setThermostatMode(value)
+        break
+        case "thermostatFanMode":
+            device.setThermostatFanMode(value)
+        break
+    }
+}
+
+def actionMusicPlayer(device, attribute, value) {
+    switch(attribute) {
+        case "level":
+            device.setLevel(value)
+        break
+        case "mute":
+            if (value == "muted") {
+                device.mute()
+            } else if (value == "unmuted") {
+                device.unmute()
+            }
+        break
+    }
+}
+
+def actionColorTemperature(device, attribute, value) {
+    device.setColorTemperature(value)
+}
+
+def actionLevel(device, attribute, value) {
+    device.setLevel(value as int)
+}
+
+def actionConsumable(device, attribute, value) {
+    device.setConsumableStatus(value)
+}
+
+def actionLock(device, attribute, value) {
+    if (value == "locked") {
+        device.lock()
+    } else if (value == "unlocked") {
+        device.unlock()
+    }
+}
+
+def actionCoolingThermostat(device, attribute, value) {
+    device.setCoolingSetpoint(value)
+}
+
+def actionThermostatFan(device, attribute, value) {
+    device.setThermostatFanMode(value)
+}
+
+def actionHeatingThermostat(device, attribute, value) {
+    device.setHeatingSetpoint(value)
+}
+
+def actionThermostatMode(device, attribute, value) {
+    device.setThermostatMode(value)
+}
+
+def actionTimedSession(device, attribute, value) {
+    if (attribute == "timeRemaining") {
+        device.setTimeRemaining(value)
+    }
 }
