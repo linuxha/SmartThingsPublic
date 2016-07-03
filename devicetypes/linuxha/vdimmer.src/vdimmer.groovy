@@ -75,26 +75,26 @@ def off() {
 
 def setLevel(val){
     log.info "setLevel $val"
-    
+    def tval = val.toInteger()
     // make sure we don't drive switches past allowed values (command will hang device waiting for it to
     // execute. Never commes back)
-    if (val < 0){
-    	val = 0
+    if (tval < 0){
+    	tval = 0
     }
     
-    if( val > 100){
-    	val = 100
+    if( tval > 100){
+    	tval = 100
     }
     
-    if (val == 0){ 
-    	sendEvent(name:"level",value:val)
+    if (tval == 0){ 
+    	sendEvent(name:"level",value:tval)
     	off()
-        log.info "OFF: setLevel $val"
+        log.info "OFF: setLevel $tval"
     } else {
     	on()
-    	sendEvent(name:"level",value:val)
-    	sendEvent(name:"switch.setLevel",value:val)
-        log.info "ON:s github.com/lientLevel $val"
+    	sendEvent(name:"level",value:tval)
+    	sendEvent(name:"switch.setLevel",value:tval)
+        log.info "ON:s github.com/lientLevel $tval"
     }
 }
 
