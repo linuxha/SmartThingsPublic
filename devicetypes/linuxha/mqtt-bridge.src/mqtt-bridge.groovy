@@ -70,24 +70,26 @@ def setNetworkAddress() {
 def parse(String description) {
     setNetworkAddress()
 
-        log.debug "1B->H Parsing '${description}'" // new JsonOutput().toJson(msg.data).toPrettyString()
-        def msg = parseLanMessage(description)
-        /* */
-        log.debug "2B->H Parsing '" + msg.data + "'"
-        log.debug "3B->H Parsing '" + msg.body + "'"
+    log.debug "Parsing '${description}'"
+    def msg = parseLanMessage(description)
 
-    /* */
     return createEvent(name: "message", value: new JsonOutput().toJson(msg.data))
 }
 
 // Send message to the Bridge
 def deviceNotification(message) {
+    if (device.hub == null)
+    {
+        log.error "Hub is null, must set the hub in the device settings so we can get local hub IP and port"
+        return
+    }
+    
     log.debug "Sending '${message}' to device"
     setNetworkAddress()
 
     def slurper = new JsonSlurper()
     def parsed = slurper.parseText(message)
-
+    
     if (parsed.path == '/subscribe') {
         parsed.body.callback = device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")
     }
