@@ -537,6 +537,8 @@ def bridgeHandler(evt) {
 
 // Receive an event from a device
 def inputHandler(evt) {
+	log.debug "IH: Receive an event from a device ($evt)"
+
     def json = new JsonOutput().toJson([
         path: "/push",
         body: [
@@ -558,6 +560,7 @@ def inputHandler(evt) {
 // restricts you from running clsures from an object (it's not safe).
 
 def actionAlarm(device, attribute, value) {
+    log.debug "ActionAlarm: ${attribute} : ${value}"
     switch (value) {
         case "strobe":
             device.strobe()
@@ -678,8 +681,8 @@ def actionTimedSession(device, attribute, value) {
     }
 }
 
-def actionPresense(device, attribute, value) {
-	log.debug "Prsence: ${attibute} : ${value}"
+def actionPresence(device, attribute, value) {
+	log.debug "actionPrsence: ${attibute} : ${value}"
 	switch (value) {
         case "1":
         case "on":
