@@ -19,6 +19,9 @@ metadata {
         capability "Actuator"
         capability "Presence Sensor"
         capability "Sensor"
+
+        command "left"
+        command "arrived"
     }
 
     simulator {
@@ -53,11 +56,12 @@ metadata {
     }
 }
 
+/*
 def installed() {
     log.debug "presence installed"
     subscribe(presence, "presence", parse)
 }
-
+*/
 def parse(String description) {
     def name            = parseName(description)
     def value           = parseValue(description)
