@@ -15,97 +15,108 @@
  */
  
 metadata {
-	definition (name: "vPresence", namespace: "linuxha", author: "SmartThings") {
-		capability "Presence Sensor"
-		capability "Sensor"
-	}
+    definition (name: "vPresence", namespace: "linuxha", author: "SmartThings") {
+        capability "Presence Sensor"
+        capability "Sensor"
+    }
 
-	simulator {
-		status "present":     "presence: 1"
-		status "not present": "presence: 0"
-	}
+    simulator {
+        status "present":     "presence: 1"
+        status "not present": "presence: 0"
+    }
 
-	tiles {
-		standardTile("presence", "device.presence", width: 2, height: 2, canChangeBackground: true) {
-		    state("present",     labelIcon:"st.presence.tile.mobile-present",     backgroundColor:"#53a7c0")
-		    state("not present", labelIcon:"st.presence.tile.mobile-not-present", backgroundColor:"#ebeef2")
-		}
-		/*
-		standardTile("presence", "device.presence", width: 2, height: 2, canChangeBackground: true) {
-		    state("present",     action='presence.arrived', labelIcon:"st.presence.tile.mobile-present",     backgroundColor:"#53a7c0")
-		    state("not present", action='presence.left',    labelIcon:"st.presence.tile.mobile-not-present", backgroundColor:"#ebeef2")
-		}
-		standardTile("present", "device.presence", inactiveLabel: false, decoration: "flat") {
-			state "default", label:'', action:"presence.arrived", icon:"st.secondary.strobe", backgroundColor:"#cccccc"
-		}
-		standardTile("not present", "device.presence", inactiveLabel: false, decoration: "flat") {
-			state "default", label:'', action:"presence.left", icon:"st.secondary.siren", backgroundColor:"#cccccc"
-		}
-		
-		main "presence"
-		details [ "present", "not present" ]
-		*/
-	main "presence"
-	details "presence"
-
-	}
+    tiles {
+        standardTile("presence", "device.presence", width: 2, height: 2, canChangeBackground: true) {
+            state("present",     labelIcon:"st.presence.tile.mobile-present",     backgroundColor:"#53a7c0")
+            state("not present", labelIcon:"st.presence.tile.mobile-not-present", backgroundColor:"#ebeef2")
+        }
+        /*
+        standardTile("presence", "device.presence", width: 2, height: 2, canChangeBackground: true) {
+            state("present",     action='presence.arrived', labelIcon:"st.presence.tile.mobile-present",     backgroundColor:"#53a7c0")
+            state("not present", action='presence.left',    labelIcon:"st.presence.tile.mobile-not-present", backgroundColor:"#ebeef2")
+        }
+        standardTile("present", "device.presence", inactiveLabel: false, decoration: "flat") {
+            state "default", label:'', action:"presence.arrived", icon:"st.secondary.strobe", backgroundColor:"#cccccc"
+        }
+        standardTile("not present", "device.presence", inactiveLabel: false, decoration: "flat") {
+            state "default", label:'', action:"presence.left", icon:"st.secondary.siren", backgroundColor:"#cccccc"
+        }
+                
+        main "presence"
+        details [ "present", "not present" ]
+        */
+        /* */
+        main    "presence"
+        details "presence"
+        /* */
+    }
 }
 
 def parse(String description) {
-	def name            = parseName(description)
-	def value           = parseValue(description)
-	def linkText        = getLinkText(device)
-	def descriptionText = parseDescriptionText(linkText, value, description)
-	def handlerName     = getState(value)
-	def isStateChange   = isStateChange(device, name, value)
+    def name            = parseName(description)
+    def value           = parseValue(description)
+    def linkText        = getLinkText(device)
+    def descriptionText = parseDescriptionText(linkText, value, description)
+    def handlerName     = getState(value)
+    def isStateChange   = isStateChange(device, name, value)
 
-	def pair = description.split(":")
-	createEvent(name: pair[0].trim(), value: pair[1].trim())
+    def pair = description.split(":")
+    createEvent(name: pair[0].trim(), value: pair[1].trim())
 
-	def results = [
-    		translatable:    true,
-		name:            name,
-		value:           value,
-		unit:            null,
-		linkText:        linkText,
-		descriptionText: descriptionText,
-		handlerName:     handlerName,
-		isStateChange:   isStateChange,
-		displayed:       displayed(description, isStateChange)
-	]
-	log.debug "Parse returned $results.descriptionText"
-	return results
+    def results = [
+        translatable:    true,
+        name:            name,
+        value:           value,
+        unit:            null,
+        linkText:        linkText,
+        descriptionText: descriptionText,
+        handlerName:     handlerName,
+        isStateChange:   isStateChange,
+        displayed:       displayed(description, isStateChange)
+    ]
+    log.debug "Parse returned $results.descriptionText"
+    return results
 }
 
 private String parseName(String description) {
-	if (description?.startsWith("presence: ")) {
-		return "presence"
-	}
-	null
+    if (description?.startsWith("presence: ")) {
+        return "presence"
+    }
+    null
 }
 
 private String parseValue(String description) {
-	switch(description) {
-		case "presence: 1": return "present"
-		case "presence: 0": return "not present"
-		default: return description
-	}
+    switch(description) {
+        case "presence: 1": return "present"
+        case "presence: 0": return "not present"
+        default: return description
+    }
 }
 
 private parseDescriptionText(String linkText, String value, String description) {
-	switch(value) {
-		case "present":     return "{{ linkText }} has arrived"
-		case "not present": return "{{ linkText }} has left"
-		default: return value
-	}
+    switch(value) {
+        case "present":
+            return "{{ linkText }} has arrived"
+
+        case "not present":
+            return "{{ linkText }} has left"
+
+        default:
+            return value
+    }
 }
 
 private getState(String value) {
-	switch(value) {
-		case "present": return "arrived"
-		case "not present": return "left"
-		default: return value
-	}
+    switch(value) {
+        case "present":
+            return "arrived"
+
+        case "not present":
+            return "left"
+
+        default:
+            return value
+    }
 }
 
 def arrived() {
