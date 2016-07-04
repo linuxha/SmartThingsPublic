@@ -679,28 +679,18 @@ def actionTimedSession(device, attribute, value) {
 }
 
 def actionPresense(device, attribute, value) {
-    switch (value) {
+	log.debug "Prsence: ${attibute} : ${value}"
+	switch (value) {
         case "1":
         case "on":
         case "present":
             device.arrived()
-        break
+        	break
+
+        case "off":
+        case "0":
         case "not present":
             device.left()
-        break
-	/*
-        case "on":
-            device.arrived()
-        break
-        case "off":
-            device.left()
-        break
-        case "1":
-            device.arrived()
-        break
-        case "0":
-            device.left()
-        break
-	*/
+        	break
     }
 }
