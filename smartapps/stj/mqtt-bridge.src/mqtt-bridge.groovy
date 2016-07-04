@@ -433,7 +433,7 @@ preferences {
     }
 
     section ("Bridge") {
-        input "bridge", "capability.notification", title: "Notify this Bridge", required: true, multiple: false
+        input "bridge", "capability.notification", title: "Notify this Bridge", required: true, multiple: true
     }
 }
 
