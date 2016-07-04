@@ -73,6 +73,10 @@ def parse(String description) {
     log.debug "Parsing '${description}'"
     def msg = parseLanMessage(description)
 
+	/* */
+    log.debug "2B->H Parsing '" + msg.data + "'"
+    log.debug "3B->H Parsing '" + msg.body + "'"
+
     return createEvent(name: "message", value: new JsonOutput().toJson(msg.data))
 }
 
