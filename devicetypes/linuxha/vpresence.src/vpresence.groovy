@@ -16,6 +16,7 @@
  
 metadata {
     definition (name: "vPresence", namespace: "linuxha", author: "SmartThings") {
+        capability "Actuator"
         capability "Presence Sensor"
         capability "Sensor"
     }
@@ -30,7 +31,7 @@ metadata {
             state("present",     labelIcon:"st.presence.tile.mobile-present",     backgroundColor:"#53a7c0")
             state("not present", labelIcon:"st.presence.tile.mobile-not-present", backgroundColor:"#ebeef2")
         }
-        /*
+        /* * /
         standardTile("presence", "device.presence", width: 2, height: 2, canChangeBackground: true) {
             state("present",     action='presence.arrived', labelIcon:"st.presence.tile.mobile-present",     backgroundColor:"#53a7c0")
             state("not present", action='presence.left',    labelIcon:"st.presence.tile.mobile-not-present", backgroundColor:"#ebeef2")
@@ -44,7 +45,7 @@ metadata {
                 
         main "presence"
         details [ "present", "not present" ]
-        */
+        /* */
         /* */
         main    "presence"
         details "presence"
@@ -53,7 +54,8 @@ metadata {
 }
 
 def installed() {
-  subscribe(presence, "presence", parse)
+    log.debug "presence installed"
+    subscribe(presence, "presence", parse)
 }
 
 def parse(String description) {
@@ -126,9 +128,12 @@ private getState(String value) {
 }
 
 def arrived() {
+    log.debug "presence: arrived"
     sendEvent(name: "presence", value: "present")
 }
 
 def left() {
+    log.debug "presence: left"
+
     sendEvent(name: "presence", value: "not present")
 }
