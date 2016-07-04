@@ -60,9 +60,6 @@ def parse(String description) {
     def handlerName     = getState(value)
     def isStateChange   = isStateChange(device, name, value)
 
-    def pair = description.split(":")
-    createEvent(name: pair[0].trim(), value: pair[1].trim())
-
     def results = [
         translatable:    true,
         name:            name,
@@ -75,6 +72,11 @@ def parse(String description) {
         displayed:       displayed(description, isStateChange)
     ]
     log.debug "Parse returned $results.descriptionText"
+
+    def pair = description.split(":")
+    createEvent(name: pair[0].trim(), value: pair[1].trim())
+
+    log.debug "vPresence: After createEvent"
     return results
 }
 
