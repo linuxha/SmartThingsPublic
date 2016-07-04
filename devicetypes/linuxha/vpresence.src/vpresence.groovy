@@ -30,6 +30,7 @@ metadata {
     }
 
     tiles {
+        /* */
         standardTile("presence", "device.presence", width: 2, height: 2, canChangeBackground: true) {
             state("present",     labelIcon:"st.presence.tile.mobile-present",     backgroundColor:"#53a7c0")
             state("not present", labelIcon:"st.presence.tile.mobile-not-present", backgroundColor:"#ebeef2")
@@ -39,17 +40,18 @@ metadata {
             state("present",     action='presence.arrived', labelIcon:"st.presence.tile.mobile-present",     backgroundColor:"#53a7c0")
             state("not present", action='presence.left',    labelIcon:"st.presence.tile.mobile-not-present", backgroundColor:"#ebeef2")
         }
-        standardTile("present", "device.presence", inactiveLabel: false, decoration: "flat") {
+        */
+        standardTile("Present", "device.presence", inactiveLabel: false, decoration: "flat") {
             state "default", label:'', action:"presence.arrived", icon:"st.secondary.strobe", backgroundColor:"#cccccc"
         }
-        standardTile("not present", "device.presence", inactiveLabel: false, decoration: "flat") {
+        standardTile("Away", "device.presence", inactiveLabel: false, decoration: "flat") {
             state "default", label:'', action:"presence.left", icon:"st.secondary.siren", backgroundColor:"#cccccc"
         }
                 
         main "presence"
-        details [ "present", "not present" ]
+        details( [ "Present", "Away" ] )
         /* */
-        /* */
+        /* * /
         main    "presence"
         details "presence"
         /* */
