@@ -52,6 +52,10 @@ metadata {
     }
 }
 
+def installed() {
+  subscribe(presence, "presence", parse)
+}
+
 def parse(String description) {
     def name            = parseName(description)
     def value           = parseValue(description)
