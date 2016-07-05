@@ -79,6 +79,7 @@ def parse(String message) {
 }
 
 def set(value) {
+    log.debug "vTemperature: ${value}"
     sendEvent(name: "temperature", value: "${value}")
 }
 
