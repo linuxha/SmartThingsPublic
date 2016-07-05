@@ -29,6 +29,7 @@ metadata {
 
         // custom commands
         command "parse"     // (String "temperature:<value>")
+        command "set"
     }
 
     tiles {
