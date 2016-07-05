@@ -78,6 +78,10 @@ def parse(String message) {
     sendEvent(event)
 }
 
+def set(value) {
+    sendEvent(name: "temperature", value: "${value}")
+}
+
 private def TRACE(message) {
     //log.debug message
 }

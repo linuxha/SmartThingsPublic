@@ -71,6 +71,10 @@ def parse(String message) {
     sendEvent(event)
 }
 
+def set(value) {
+    sendEvent(name: "humidity", value: "${value}")
+}
+
 private def TRACE(message) {
     log.debug "vHumidity ${message}"
 }
