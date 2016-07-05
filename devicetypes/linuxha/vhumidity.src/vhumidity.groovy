@@ -32,6 +32,7 @@ metadata {
 
         // custom commands
         command "parse"     // (String "humidity:<value>")
+        command "set"
     }
 
     tiles {
