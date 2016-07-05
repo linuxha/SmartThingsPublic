@@ -40,9 +40,9 @@ metadata {
             state("present",     action='presence.arrived', labelIcon:"st.presence.tile.mobile-present",     backgroundColor:"#53a7c0")
             state("not present", action='presence.left',    labelIcon:"st.presence.tile.mobile-not-present", backgroundColor:"#ebeef2")
         }
-        */
+        /* */
         standardTile("Present", "device.presence", inactiveLabel: false, decoration: "flat") {
-            state "default", label:'', action:"presence.arrived", icon:"st.secondary.strobe", backgroundColor:"#cccccc"
+            state "default", label:'', action:"presence.arrived", icon:"st.secondary.strobe", backgroundColor:"#53a7c0"
         }
         standardTile("Away", "device.presence", inactiveLabel: false, decoration: "flat") {
             state "default", label:'', action:"presence.left", icon:"st.secondary.siren", backgroundColor:"#cccccc"
